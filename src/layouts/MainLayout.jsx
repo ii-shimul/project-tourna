@@ -6,11 +6,13 @@ import { Outlet } from "react-router-dom";
 const MainLayout = () => {
 	return (
 		<div>
-			<Navbar />
-			<div className="min-h-[calc(100vh-277px)]">
-				<Outlet />
+			<div className="max-w-7xl mx-auto">
+				<Navbar />
+				<div className="min-h-[calc(100vh-277px)]">
+					<Outlet />
+				</div>
+				<Footer />
 			</div>
-			<Footer />
 		</div>
 	);
 };

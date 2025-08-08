@@ -1,48 +1,50 @@
-import React from "react";
-import { GoStarFill } from "react-icons/go";
+import banner from '../../assets/banner.svg';
+import banner2 from '../../assets/banner2.svg';
+
 const Banner = () => {
 	return (
-		<div className="mt-16 -4">
-			<div className="lg:flex justify-between items-center ">
-				<div>
-					<div className="lg:flex items-center">
-						<h1 className="lg:text-9xl text-6xl ml-5 lg:ml-0 quando break-words">
-							Enjoy
-						</h1>
-						<img
-							src={"https://placehold.co/400"}
-							alt=""
-							className="w-28 h-28 ml-7 hidden lg:block"
-						/>
-					</div>
-					<h1 className="lg:text-9xl text-6xl ml-5 lg:ml-0 quando line -4 mt-2">
-						Your Food
-					</h1>
-					<div className="lg:flex items-center ml-5 lg:mt-5 mt-2 ">
-						<p className="text-lg poppins w-80 text-[#5C5C5C]">
-							Purest food experience focusing on premium quality ingredient{" "}
-						</p>
-						<a
-							className="btn bg-[#FB5C60] text-white poppins rounded-lg roboto lg:w-40
-lg:h-14 p-5 lg:p-0 mt-4 lg:mt-4"
-						>
-							Check menu
-						</a>
-					</div>
-					<div className="flex items-center mb-5 lg:mb-0 ml-5 mt-5 font-semibold">
-						<p className="text-base poppins">our happy customer</p>
-						<GoStarFill className="text-[#FDC405] ml-2 text-2xl mr-1" />
-						<p>4.8</p>
-						<p className="text-red-500">(5k Reviews)</p>
-					</div>
+		<div>
+			{/* Header Section */}
+			<div className="lg:flex items-center space-x-5 p-5">
+				<h1 className="lg:text-8xl text-5xl bebas lg:mt-15 mt-10 lg:w-1/2 w-full">
+					Tourna / Where Teams Unite
+					<br className="block lg:hidden" /> For Battles
+				</h1>
+
+				<div className="lg:w-1/2 w-full">
+					<p className="liter lg:text-xl">
+						At Tourna, we believe tournaments are more than just
+						competitions—they're where legends are born. Whether you're an
+						organizer crafting epic battles or a competitor hungry for victory,
+						we've got the perfect platform for you. From local showdowns to
+						championship series, step into a world where every match writes
+						history.
+					</p>
+
+					<button className="btn bg-black text-white mt-5 roboto w-24 h-12">
+						Log In
+					</button>
+					<button className="btn bg-white text-black border-black ml-5 mt-5 roboto w-24 h-12">
+						Explore
+					</button>
 				</div>
+			</div>
+
+			{/* Image Section */}
+			<div className="flex flex-col lg:flex-row items-center gap-5 p-5">
 				<img
-					src={"https://placehold.co/400"}
-					alt=""
-					className="max-w-full object-cover"
+					className="w-full lg:w-1/2 h-auto object-cover"
+					src={banner}
+					alt="banner image"
+				/>
+				<img
+					className="w-full lg:w-1/2 h-auto object-cover"
+					src={banner2}
+					alt="second banner image"
 				/>
 			</div>
 		</div>
 	);
 };
+
 export default Banner;
