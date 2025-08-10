@@ -13,7 +13,7 @@ const Discover = () => {
 					<p className="liter  font-semibold text-lg  ">
 						Our museum proudly showcases over 300 unique exhibits, attracting
 						thousands of visitors each year. Join us in celebrating the vibrant
-						world of sneakers through our diverse events and programs.
+						world of sports through our diverse events and programs.
 					</p>
 					<div className="flex justify-between mt-5">
 						<div className="">
@@ -25,7 +25,7 @@ const Discover = () => {
 						<div className="">
 							<h1 className="bebas text-6xl">50k</h1>
 							<p className="roboto font-semibold">
-								Visitors exploring sneaker culture annually.
+								Visitors exploring sport culture annually.
 							</p>
 						</div>
 					</div>
