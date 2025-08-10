@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import banner from '../../assets/banner.svg';
 import banner2 from '../../assets/banner2.svg';
 
@@ -21,12 +22,12 @@ const Banner = () => {
 						history.
 					</p>
 
-					<button className="btn bg-black text-white mt-5 roboto w-24 h-12">
-						Log In
-					</button>
-					<button className="btn bg-white text-black border-black ml-5 mt-5 roboto w-24 h-12">
-						Explore
-					</button>
+					<Link to={"/login"} className="btn bg-black text-white mt-5 roboto w-24 h-12">
+						Login
+					</Link>
+					<Link to={"/signup"} className="btn bg-white text-black border-black ml-5 mt-5 roboto w-24 h-12">
+						Signup
+					</Link>
 				</div>
 			</div>
 
