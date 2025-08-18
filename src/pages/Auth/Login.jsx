@@ -1,8 +1,39 @@
-import React from "react";
 import img from "../../assets/signup.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data) => {
+    fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          toast.success(data.message);
+          navigate("/");
+          localStorage.setItem("user", JSON.stringify(data.data));
+        } else {
+          toast.error(data.error);
+        }
+      })
+      .catch((err) => {
+        toast.error("An error occurred, try again later.");
+        console.log(err);
+      });
+  };
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex-1">
@@ -15,7 +46,10 @@ const Login = () => {
             Ready to embark your next tournament? Log in now and let the MKS
             manage you there. Your dream tournament is just a click away !{" "}
           </p>
-          <form action="" className="anton flex flex-col gap-5">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="anton flex flex-col gap-5"
+          >
             <label className="input validator w-full">
               <svg
                 className="h-[1em] opacity-50"
@@ -33,7 +67,12 @@ const Login = () => {
                   <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                 </g>
               </svg>
-              <input type="email" placeholder="mail@site.com" required />
+              <input
+                type="email"
+                placeholder="mail@site.com"
+                required
+                {...register("email")}
+              />
             </label>
             <div className="validator-hint hidden">
               Enter valid email address
@@ -68,6 +107,7 @@ const Login = () => {
                 minlength="8"
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                 title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                {...register("password")}
               />
             </label>
             <p className="validator-hint hidden">

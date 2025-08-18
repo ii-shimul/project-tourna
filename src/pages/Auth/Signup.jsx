@@ -21,6 +21,7 @@ const Signup = () => {
       .then((data) => {
         if (data.success) {
           toast.success(data.message);
+          localStorage.setItem("user", JSON.stringify(data.data));
         } else {
           toast.error(data.error);
         }
