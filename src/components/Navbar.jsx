@@ -5,8 +5,10 @@ const Navbar = () => {
     const links = <>
         <li className='text-lg roboto font-semibold'><NavLink to="/">Home</NavLink></li>
         <li className='text-lg roboto font-semibold'><NavLink to="/add-team">Add Team</NavLink></li>
+        <li className='text-lg roboto font-semibold'><NavLink to="/Manage-team">Manage Team</NavLink></li>
         <li className='text-lg roboto font-semibold'><NavLink to="/add-tourna">Add Tournament</NavLink></li>
         <li className='text-lg roboto font-semibold'><NavLink to="/about">About Us</NavLink></li>
+
     </>
 
     return (
