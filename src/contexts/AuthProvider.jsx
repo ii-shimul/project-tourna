@@ -1,8 +1,9 @@
 import AuthContext from "./AuthContext.jsx";
 
 const AuthProvider = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem("user")) || null;
   const authInfo = {
-    hi: "context",
+    user
   };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

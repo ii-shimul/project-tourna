@@ -23,6 +23,7 @@ const Login = () => {
         if (data.success) {
           toast.success(data.message);
           navigate("/");
+          window.location.reload();
           localStorage.setItem("user", JSON.stringify(data.data));
         } else {
           toast.error(data.error);
