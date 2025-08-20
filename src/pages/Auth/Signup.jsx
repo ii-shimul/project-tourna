@@ -1,31 +1,39 @@
 import img from "../../assets/login.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
-    fetch("http://localhost:3000/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          toast.success(data.message);
-          localStorage.setItem("user", JSON.stringify(data.data));
-        } else {
-          toast.error(data.error);
-        }
-      });
+    try {
+      fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            toast.success(data.message);
+            navigate("/");
+            window.location.reload()
+            localStorage.setItem("user", JSON.stringify(data.data));
+          } else {
+            toast.error(data.error);
+          }
+        });
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error("An error occurred, try again!");
+    }
   };
   return (
     <div className="flex justify-between items-center">
