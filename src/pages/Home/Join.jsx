@@ -13,9 +13,6 @@ const Join = () => {
 				<button className="btn bg-white text-black border-black mt-5 roboto  h-12">
 					Explore
 				</button>
-				<button className="btn bg-white text-black  ml-5 mt-5 roboto  h-12">
-					Sign Up
-				</button>
 			</div>
 			<img
 				className="lg:w-1/2 lg:mt-0 mt-5 lg:h-[600px]"

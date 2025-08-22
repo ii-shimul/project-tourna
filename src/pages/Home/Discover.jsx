@@ -32,9 +32,6 @@ const Discover = () => {
 					<button className="btn bg-white text-black border-black mt-5 roboto  h-12">
 						Learn More
 					</button>
-					<button className="btn bg-white text-black  ml-5 mt-5 roboto  h-12">
-						Sign Up
-					</button>
 				</div>
 			</div>
 			<div className="lg:mt-20 lg:mb-20 lg:p-0 p-5">
