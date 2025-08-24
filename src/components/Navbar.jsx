@@ -22,7 +22,7 @@ const Navbar = () => {
         <NavLink to="/add-team">Add Team</NavLink>
       </li>
       <li className="text-lg roboto font-semibold">
-        <NavLink to="/add-tourna">Add Tournament</NavLink>
+        <NavLink to="/add-tournament">Add Tournament</NavLink>
       </li>
       <li className="text-lg roboto font-semibold">
         <NavLink to="/about">About Us</NavLink>

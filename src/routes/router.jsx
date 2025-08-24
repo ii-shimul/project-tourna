@@ -3,10 +3,10 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
-import Add from "../pages/Tournament/Add";
-import Manage from "../pages/Tournament/Manage";
-import AddTeam from "../pages/AddTeam/AddTeam";
-import ManageTeams from "../pages/ManageTeams/ManageTeams";
+import AddTournament from "../pages/Tournament/Add";
+import ManageTournament from "../pages/Tournament/Manage";
+import AddTeam from "../pages/Teams/Add";
+import ManageTeams from "../pages/Teams/Manage";
                                    
 const router = createBrowserRouter([
   {
@@ -27,18 +27,18 @@ const router = createBrowserRouter([
       },
       {
         path: "/add-tournament",
-        element: <Add />,
+        element: <AddTournament />,
       },
       {
         path: "/manage-tournament",
-        element: <Manage />,
+        element: <ManageTournament />,
       },
 			{
 				path:"/add-team",
 				element:<AddTeam></AddTeam>
 			},
 			{
-				path:"/Manage-team",
+				path:"/manage-team",
 				element : <ManageTeams></ManageTeams>
 			},
     ],
