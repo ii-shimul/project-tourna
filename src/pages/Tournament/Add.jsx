@@ -51,7 +51,7 @@ export default function CreateTournamentPage() {
                     <input
                       type="text"
                       className={`input input-bordered w-full`}
-                      {...register("tournamentName", {
+                      {...register("name", {
                         required: "Name is required",
                         minLength: 3,
                       })}
@@ -108,65 +108,19 @@ export default function CreateTournamentPage() {
                     </select>
                   </label>
                 </div>
-
-                <div className="grid grid-cols-5 gap-2 md:gap-4">
-                  <label className="form-control col-span-2 sm:col-span-1">
-                    <div className="label">
-                      <span className="label-text">Code</span>
-                    </div>
-                    <select
-                      className="select select-bordered"
-                      {...register("phoneCountry")}
-                    >
-                      <option>+880</option>
-                      <option>+1</option>
-                      <option>+44</option>
-                      <option>+61</option>
-                    </select>
-                  </label>
-
-                  <label className="form-control col-span-3 sm:col-span-4">
-                    <div className="label">
-                      <span className="label-text">Organizer phone number</span>
-                    </div>
-                    <input
-                      type="tel"
-                      className={"input input-bordered w-full"}
-                      {...register("phoneNumber", {
-                        required: "Phone is required",
-                        minLength: { value: 6, message: "Too short" },
-                      })}
-                    />
-                  </label>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label className="form-control w-full">
-                    <div className="label">
-                      <span className="label-text">Pin code</span>
-                    </div>
-                    <input
-                      type="password"
-                      className={`input input-bordered w-full`}
-                      {...register("pin", {
-                        required: "Pin is required",
-                        minLength: { value: 4, message: "Min 4 digits" },
-                      })}
-                    />
-                  </label>
-                  <label className="form-control w-full">
-                    <div className="label">
-                      <span className="label-text">Repeat pin code</span>
-                    </div>
-                    <input
-                      type="password"
-                      className={`input input-bordered w-full`}
-                      {...register("pinRepeat", {
-                        required: "Please repeat the pin",
-                      })}
-                    />
-                  </label>
-                </div>
+                <label className="form-control">
+                  <div className="label">
+                    <span className="label-text">Organizer phone number</span>
+                  </div>
+                  <input
+                    type="tel"
+                    className={"input input-bordered w-full mb-4"}
+                    {...register("phoneNumber", {
+                      required: "Phone is required",
+                      minLength: { value: 6, message: "Too short" },
+                    })}
+                  />
+                </label>
 
                 <div className="pt-2">
                   <button
