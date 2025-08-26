@@ -16,7 +16,6 @@ const lengths = [
 export default function CreateTournamentPage() {
   const { register, handleSubmit, reset, isSubmitting } = useForm();
   const [tournaments, setTournaments] = useState([]);
-
   const onSubmit = async (data) => {
     console.log("Create tournament payload:", data);
     reset();

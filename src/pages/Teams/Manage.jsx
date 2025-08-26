@@ -1,13 +1,72 @@
 import React, { useState } from "react";
 
 const ManageTeams = () => {
-    
   const [players, setPlayers] = useState([
-    { oldName: "Player 1", newName: "", played: 100, kill: 491, clutch: 87, assists: 652, ace: 47, die: 307, hs: 87, plant: 47, defuse: 34 },
-    { oldName: "Player 2", newName: "", played: 100, kill: 491, clutch: 87, assists: 652, ace: 47, die: 307, hs: 87, plant: 47, defuse: 34 },
-    { oldName: "Player 3", newName: "", played: 100, kill: 491, clutch: 87, assists: 652, ace: 47, die: 307, hs: 87, plant: 47, defuse: 34 },
-    { oldName: "Player 4", newName: "", played: 100, kill: 491, clutch: 87, assists: 652, ace: 47, die: 307, hs: 87, plant: 47, defuse: 34 },
-    { oldName: "Player 5", newName: "", played: 100, kill: 491, clutch: 87, assists: 652, ace: 47, die: 307, hs: 87, plant: 47, defuse: 34 },
+    {
+      oldName: "Player 1",
+      newName: "",
+      played: 100,
+      kill: 491,
+      clutch: 87,
+      assists: 652,
+      ace: 47,
+      die: 307,
+      hs: 87,
+      plant: 47,
+      defuse: 34,
+    },
+    {
+      oldName: "Player 2",
+      newName: "",
+      played: 100,
+      kill: 491,
+      clutch: 87,
+      assists: 652,
+      ace: 47,
+      die: 307,
+      hs: 87,
+      plant: 47,
+      defuse: 34,
+    },
+    {
+      oldName: "Player 3",
+      newName: "",
+      played: 100,
+      kill: 491,
+      clutch: 87,
+      assists: 652,
+      ace: 47,
+      die: 307,
+      hs: 87,
+      plant: 47,
+      defuse: 34,
+    },
+    {
+      oldName: "Player 4",
+      newName: "",
+      played: 100,
+      kill: 491,
+      clutch: 87,
+      assists: 652,
+      ace: 47,
+      die: 307,
+      hs: 87,
+      plant: 47,
+      defuse: 34,
+    },
+    {
+      oldName: "Player 5",
+      newName: "",
+      played: 100,
+      kill: 491,
+      clutch: 87,
+      assists: 652,
+      ace: 47,
+      die: 307,
+      hs: 87,
+      plant: 47,
+      defuse: 34,
+    },
   ]);
 
   const [stats, setStats] = useState({ matchesPlayed: 12, win: 7, lose: 5 });
@@ -25,11 +84,13 @@ const ManageTeams = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto mt-10">
-            <h1 className="font-medium text-5xl mb-3">Manage your team</h1>
-            <p className="font-normal text-sm w-4xl mb-10">
-           "Take full control of your squad! 🏆 Change your team name to match your style, adjust points as the tournament progresses, and keep everything organized so your team is always ready for the next challenge."
-          </p>
+    <div className="max-w-7xl mt-10">
+      <h1 className="font-medium text-5xl mb-3">Manage your team</h1>
+      <p className="font-normal text-sm w-4xl mb-10">
+        "Take full control of your squad! 🏆 Change your team name to match your
+        style, adjust points as the tournament progresses, and keep everything
+        organized so your team is always ready for the next challenge."
+      </p>
       <h2 className="text-lg font-medium mb-5">Overview</h2>
 
       <div className="grid grid-cols-2 gap-6">
@@ -73,7 +134,17 @@ const ManageTeams = () => {
               key={index}
               className="grid grid-cols-9 gap-x-4 space-y-13 text-sm text-gray-700 py-2 border-b border-gray-100"
             >
-              {["played", "kill", "clutch", "assists", "ace", "die", "hs", "plant", "defuse"].map((stat) => (
+              {[
+                "played",
+                "kill",
+                "clutch",
+                "assists",
+                "ace",
+                "die",
+                "hs",
+                "plant",
+                "defuse",
+              ].map((stat) => (
                 <input
                   key={stat}
                   type="number"

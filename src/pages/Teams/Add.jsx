@@ -143,13 +143,13 @@ const AddTeam = () => {
           {teams.length === 0 ? (
             <div>
               <p className="font-normal text-sm">
-                pay a view your created teams into us and you can delete or
-                mange your teams in here. Get sure the teams and let’s goo....!
+                Pay a view your created teams into us and you can delete or
+                mange your teams in here. Get sure the teams and let's go...!
               </p>
-              <div className="mt-40  justify-center flex-col text-center ">
-                <h1 className="roboto font-bold text-2xl mb-2">NO Teams</h1>
-                <p className="text-center font-normal text-sm ">
-                  "It’s a little empty here right now… 🏟 No teams have been
+              <div className="mt-40  justify-center flex-col">
+                <h1 className="roboto font-bold text-2xl mb-2">No Teams</h1>
+                <p className="font-normal text-sm">
+                  "It's a little empty here right now… 🏟 No teams have been
                   created yet. Kick things off by starting your very own team
                   and let the competition begin!"
                 </p>
@@ -157,28 +157,19 @@ const AddTeam = () => {
             </div>
           ) : (
             <ul className="space-y-3">
-              <h1 className="font-normal text-sm text-black">pay a view your old tournaments  into us and you can delete or mange your tournament
-in here. Get the pin code and get access</h1>
-              {teams.map((team, index) => (
-              <div className="flex mt-9 gap-x-3">
+              <h1 className="font-normal text-sm text-black">
+                Pay a view your old tournaments into us and you can delete or
+                mange your tournament in here. Get the pin code and get access
+              </h1>
+              {teams.map((team) => (
+                <div className="flex mt-9 gap-x-3">
                   <div className="w-2xs  h-12 rounded-lg bg-[#43467F] flex items-center">
-                  <h1 className="ml-5 text-white font-medium">
-                    {team.teamName}
-                  </h1>
-                </div>
+                    <h1 className="ml-5 text-white font-medium">
+                      {team.teamName}
+                    </h1>
+                  </div>
                   <button className="btn h-12">Manage Team</button>
-              </div>
-
-
-                //      <li key={index} className="p-3 border rounded shadow">
-                //   <h3 className="font-bold">{team.teamName}</h3>
-                //   <p>Members: {team.members}</p>
-                //   <p>Coach: {team.coach}</p>
-                //   <p>Month: {team.month}</p>
-                //   <p>
-                //     Players: {team.player1}, {team.player2}, {team.player3}, {team.player4}, {team.player5}
-                //   </p>
-                // </li>
+                </div>
               ))}
             </ul>
           )}
