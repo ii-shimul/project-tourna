@@ -19,10 +19,10 @@ const Navbar = () => {
         <NavLink to="/">Home</NavLink>
       </li>
       <li className="text-lg roboto font-semibold">
-        <NavLink to="/add-team">Add Team</NavLink>
+        <NavLink to="/teams">Teams</NavLink>
       </li>
       <li className="text-lg roboto font-semibold">
-        <NavLink to="/add-tournament">Add Tournament</NavLink>
+        <NavLink to="/tournaments">Tournaments</NavLink>
       </li>
       <li className="text-lg roboto font-semibold">
         <NavLink to="/about">About Us</NavLink>
@@ -31,7 +31,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar">
+    <div className="navbar px-4">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -57,7 +57,7 @@ const Navbar = () => {
             {links}
           </ul>
         </div>
-        <a className="btn btn-ghost lg:text-3xl text-xl liter">Tourna</a>
+        <button className="lg:text-3xl text-xl liter font-bold">Tourna</button>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{links}</ul>
