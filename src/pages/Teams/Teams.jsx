@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
+import { BsX } from "react-icons/bs";
 
 // Select options
 const games = [
@@ -10,78 +11,84 @@ const games = [
   { label: "Volleyball", value: "Volleyball" },
 ];
 
-// Seeded demo data (replace with fetch when backend is ready)
-const seededTeams = [
-  {
-    id: "tm-101",
-    name: "Crimson Hawks",
-    game: "Football",
-    captain: "Arif Rahman",
-    members: [
-      "Arif Rahman",
-      "J. Khan",
-      "S. Hossain",
-      "T. Malik",
-      "R. Khatun",
-      "M. Alam",
-      "H. Chowdhury",
-      "B. Das",
-      "N. Naser",
-      "I. Uddin",
-      "F. Islam",
-    ],
-    createdAt: "2025-08-01",
-  },
-  {
-    id: "tm-102",
-    name: "Pixel Ninjas",
-    game: "eSports",
-    captain: "Nadia Noor",
-    members: ["Nadia Noor", "Rafi", "Javed", "Pinky", "Sifat"],
-    createdAt: "2025-08-12",
-  },
-  {
-    id: "tm-103",
-    name: "Skyline Shooters",
-    game: "Basketball",
-    captain: "Tahsin Ahmed",
-    members: ["Tahsin", "Sakib", "Ahsan", "Neil", "Oyon"],
-    createdAt: "2025-07-18",
-  },
-  {
-    id: "tm-104",
-    name: "Green Strikers",
-    game: "Cricket",
-    captain: "Mizan Karim",
-    members: [
-      "Mizan",
-      "Raju",
-      "Anik",
-      "Kamal",
-      "Rony",
-      "Omar",
-      "Sajib",
-      "Imran",
-      "Rifat",
-      "Tuhin",
-      "Parvez",
-    ],
-    createdAt: "2025-06-05",
-  },
-];
+const CURRENT_USER_ID = 1; // This would come from authentication context
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState([]);
   const [query, setQuery] = useState("");
   const [filterGame, setFilterGame] = useState("All");
   const [sortBy, setSortBy] = useState("Newest");
-  const [view, setView] = useState("grid");
   const [openCreate, setOpenCreate] = useState(false);
   const [inspectTeam, setInspectTeam] = useState(null);
 
   // Load existing teams on mount
   useEffect(() => {
-    setTeams(seededTeams);
+    // Fetch teams from the backend
+    const fetchTeams = async () => {
+      try {
+        // In production, replace with actual API call:
+        // const response = await axios.get(`${API_BASE_URL}/teams`);
+        // const fetchedTeams = response.data;
+
+        // Mock data for development until backend is ready
+        const mockTeams = [
+          {
+            id: 101,
+            name: "Crimson Hawks",
+            owner_user_id: 1,
+            members_json: JSON.stringify([
+              "Arif Rahman",
+              "J. Khan",
+              "S. Hossain",
+              "T. Malik",
+              "R. Khatun",
+              "M. Alam",
+              "H. Chowdhury",
+              "B. Das",
+              "N. Naser",
+              "I. Uddin",
+              "F. Islam",
+            ]),
+            members_count: 11,
+            game: "Football",
+            created_at: "2025-08-01T00:00:00.000Z",
+          },
+          {
+            id: 102,
+            name: "Pixel Ninjas",
+            owner_user_id: 2,
+            members_json: JSON.stringify([
+              "Nadia Noor",
+              "Rafi",
+              "Javed",
+              "Pinky",
+              "Sifat",
+            ]),
+            members_count: 5,
+            game: "eSports",
+            created_at: "2025-08-12T00:00:00.000Z",
+          },
+        ];
+
+        // Transform data to match our frontend model
+        const transformedTeams = mockTeams.map((team) => ({
+          id: team.id,
+          name: team.name,
+          owner_user_id: team.owner_user_id,
+          game: team.game || "Unknown",
+          captain: JSON.parse(team.members_json)[0] || "Unknown",
+          members: JSON.parse(team.members_json),
+          membersCount: team.members_count,
+          createdAt: new Date(team.created_at).toISOString().slice(0, 10),
+        }));
+
+        setTeams(transformedTeams);
+      } catch (error) {
+        console.error("Failed to fetch teams:", error);
+      }
+    };
+
+    fetchTeams();
   }, []);
 
   // Derived filtered/sorted list
@@ -133,23 +140,46 @@ export default function TeamsPage() {
   // Above trick avoids TS complaints in plain JS projects; if using TS, pass the control from useForm.
 
   const onCreate = async (data) => {
-    // Compose team object and optimistically add
-    const mems = (data.members || []).map((m) => m.name).filter(Boolean);
-    const item = {
-      id: `tm-${Date.now()}`,
-      name: data.name,
-      game: data.game,
-      captain: data.captain || mems[0] || "",
-      members: mems,
-      createdAt: new Date().toISOString().slice(0, 10),
-    };
-    setTeams((prev) => [item, ...prev]);
-    reset();
-    setOpenCreate(false);
+    try {
+      // Extract member names from the form data
+      const memberNames = (data.members || [])
+        .map((m) => m.name)
+        .filter(Boolean);
+
+      // Prepare data for API in the format expected by the database
+      // Uncomment when connecting to backend
+      // const teamData = {
+      //   name: data.name,
+      //   owner_user_id: CURRENT_USER_ID, // From auth context
+      //   members_json: JSON.stringify(memberNames),
+      //   game: data.game
+      // };
+
+      // For development: Create an optimistic UI update before API call
+      const optimisticTeam = {
+        id: Date.now(), // Temporary ID until we get the real one from the backend
+        name: data.name,
+        game: data.game,
+        owner_user_id: CURRENT_USER_ID,
+        captain: data.captain || memberNames[0] || "",
+        members: memberNames,
+        membersCount: memberNames.length,
+        createdAt: new Date().toISOString().slice(0, 10),
+      };
+
+      // Update UI optimistically
+      setTeams((prev) => [optimisticTeam, ...prev]);
+
+      // Reset form and close modal
+      reset();
+      setOpenCreate(false);
+    } catch (error) {
+      console.error("Failed to create team:", error);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="bg-base-100">
       {/* Header */}
       <div className="border-b bg-base-100/80 backdrop-blur supports-[backdrop-filter]:bg-base-100/60">
         <div className="container mx-auto px-4 py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -161,37 +191,7 @@ export default function TeamsPage() {
           </div>
           <div className="flex items-center gap-2">
             <button
-              className={`btn btn-square ${
-                view === "grid" ? "btn-primary" : "btn-ghost"
-              }`}
-              onClick={() => setView("grid")}
-              title="Grid view"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="h-5 w-5 fill-current"
-              >
-                <path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z" />
-              </svg>
-            </button>
-            <button
-              className={`btn btn-square ${
-                view === "list" ? "btn-primary" : "btn-ghost"
-              }`}
-              onClick={() => setView("list")}
-              title="List view"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="h-5 w-5 fill-current"
-              >
-                <path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z" />
-              </svg>
-            </button>
-            <button
-              className="btn btn-primary"
+              className="btn bg-black text-white roboto"
               onClick={() => setOpenCreate(true)}
             >
               Add team
@@ -247,99 +247,61 @@ export default function TeamsPage() {
 
       {/* Content */}
       <div className="container mx-auto px-4 pb-10">
-        <div
-          className={`${
-            view === "grid"
-              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-              : "space-y-3"
-          }`}
-        >
-          {filtered.map((t) =>
-            view === "grid" ? (
-              <article key={t.id} className="card bg-base-200 shadow">
-                <div className="card-body">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="avatar placeholder">
-                        <div className="bg-primary text-primary-content rounded-xl w-12">
-                          <span className="text-lg font-bold">
-                            {t.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg leading-tight">
-                          {t.name}
-                        </h3>
-                        <div className="text-sm opacity-70">
-                          Captain: {t.captain}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="badge badge-outline mr-1">{t.game}</div>
-                      <div className="badge badge-neutral">
-                        {t.members.length} members
-                      </div>
-                    </div>
+        <ul className={"space-y-3 grid grid-cols-1 lg:grid-cols-2 gap-3"}>
+          {filtered.map((t) => (
+            <li
+              key={t.id}
+              className="grid grid-cols-2 h-full sm:grid-cols-6 gap-3 items-center bg-base-100 rounded-xl p-4 border"
+            >
+              <div className="sm:col-span-3">
+                <div className="font-medium flex items-center gap-2">
+                  <div className="bg-black text-white text-center place-content-center rounded-xl w-8 h-8">
+                    <span className="text-sm font-bold">
+                      {t.name.charAt(0).toUpperCase()}
+                    </span>
                   </div>
-                  <div className="card-actions justify-end">
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={() => setInspectTeam(t)}
-                    >
-                      Manage
-                    </button>
-                  </div>
+                  {t.name}
                 </div>
-              </article>
-            ) : (
-              <article key={t.id} className="bg-base-200 rounded-xl p-4 border">
-                <div className="grid grid-cols-6 gap-3 items-center">
-                  <div className="col-span-3 flex items-center gap-3">
-                    <div className="avatar placeholder">
-                      <div className="bg-primary text-primary-content rounded-xl w-10">
-                        <span className="font-bold">
-                          {t.name.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-medium">{t.name}</div>
-                      <div className="text-sm opacity-70">
-                        Captain: {t.captain}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-2 flex items-center gap-2">
-                    <div className="badge badge-outline">{t.game}</div>
-                    <div className="badge badge-neutral">
-                      {t.members.length} members
-                    </div>
-                  </div>
-                  <div className="col-span-1 text-right">
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={() => setInspectTeam(t)}
-                    >
-                      Manage
-                    </button>
-                  </div>
+                <div className="text-sm opacity-70 flex items-center gap-2 mt-1">
+                  <span className="badge badge-outline badge-sm">
+                    {t.game || "Unknown"}
+                  </span>
+                  <span className="badge badge-sm">
+                    {t.membersCount || t.members.length} members
+                  </span>
                 </div>
-              </article>
-            )
-          )}
+                <div className="text-xs opacity-70 mt-1">
+                  Captain: {t.captain || "No captain"}
+                </div>
+              </div>
+              <div className="sm:col-span-2">
+                <div className="text-sm opacity-70">ID</div>
+                <div className="font-mono text-xs truncate">{t.id}</div>
+                <div className="text-xs opacity-70 mt-1">
+                  Created: {t.createdAt}
+                </div>
+              </div>
+              <div className="sm:col-span-1 text-right">
+                <button
+                  className="btn btn-outline btn-sm"
+                  onClick={() => setInspectTeam(t)}
+                >
+                  Manage
+                </button>
+              </div>
+            </li>
+          ))}
 
           {filtered.length === 0 && (
-            <div className="col-span-full">
+            <li className="col-span-full">
               <div className="alert">
                 <span>
                   No teams match your filters. Try clearing search or filters.
                 </span>
               </div>
-            </div>
+            </li>
           )}
-        </div>
+        </ul>
       </div>
 
       {/* Create Team Modal */}
@@ -382,10 +344,10 @@ export default function TeamsPage() {
 
             <label className="form-control">
               <div className="label">
-                <span className="label-text">Captain (optional)</span>
+                <span className="label-text">Captain</span>
               </div>
               <input
-                className="input input-bordered"
+                className="input input-bordered ml-1"
                 type="text"
                 placeholder="Who leads the team?"
                 {...register("captain")}
@@ -415,17 +377,11 @@ export default function TeamsPage() {
                     />
                     <button
                       type="button"
-                      className="btn btn-ghost btn-square"
+                      className="btn btn-square"
                       onClick={() => remove(idx)}
                       title="Remove"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        className="h-5 w-5"
-                      >
-                        <path d="M6 6l12 12M18 6L6 18" />
-                      </svg>
+                      <BsX />
                     </button>
                   </div>
                 ))}
@@ -466,10 +422,11 @@ export default function TeamsPage() {
                 </div>
                 <div className="text-right">
                   <div className="badge badge-outline mr-1">
-                    {inspectTeam.game}
+                    {inspectTeam.game || "Unknown"}
                   </div>
                   <div className="badge badge-neutral">
-                    {inspectTeam.members.length} members
+                    {inspectTeam.membersCount || inspectTeam.members.length}{" "}
+                    members
                   </div>
                 </div>
               </div>
