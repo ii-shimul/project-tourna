@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { BsX } from "react-icons/bs";
+import AuthContext from "../../contexts/AuthContext";
 
 // Select options
 const games = [
@@ -14,6 +15,7 @@ const games = [
 const CURRENT_USER_ID = 1; // This would come from authentication context
 
 export default function TeamsPage() {
+  const { user } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
   const [query, setQuery] = useState("");
   const [filterGame, setFilterGame] = useState("All");
@@ -128,9 +130,8 @@ export default function TeamsPage() {
   } = useForm({
     defaultValues: {
       name: "",
-      game: games[0].value,
-      captain: "",
-      members: [{ name: "" }, { name: "" }, { name: "" }],
+      user_id: user.id,
+      members: [],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -145,30 +146,17 @@ export default function TeamsPage() {
       const memberNames = (data.members || [])
         .map((m) => m.name)
         .filter(Boolean);
-
-      // Prepare data for API in the format expected by the database
-      // Uncomment when connecting to backend
-      // const teamData = {
-      //   name: data.name,
-      //   owner_user_id: CURRENT_USER_ID, // From auth context
-      //   members_json: JSON.stringify(memberNames),
-      //   game: data.game
-      // };
-
       // For development: Create an optimistic UI update before API call
-      const optimisticTeam = {
-        id: Date.now(), // Temporary ID until we get the real one from the backend
+      const newTeam = {
         name: data.name,
-        game: data.game,
         owner_user_id: CURRENT_USER_ID,
-        captain: data.captain || memberNames[0] || "",
         members: memberNames,
-        membersCount: memberNames.length,
-        createdAt: new Date().toISOString().slice(0, 10),
       };
 
+      console.log(newTeam);
+
       // Update UI optimistically
-      setTeams((prev) => [optimisticTeam, ...prev]);
+      setTeams((prev) => [newTeam, ...prev]);
 
       // Reset form and close modal
       reset();
