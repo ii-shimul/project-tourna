@@ -12,8 +12,6 @@ const games = [
   { label: "Volleyball", value: "Volleyball" },
 ];
 
-const CURRENT_USER_ID = 1; // This would come from authentication context
-
 export default function TeamsPage() {
   const { user } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
@@ -138,27 +136,29 @@ export default function TeamsPage() {
     name: "members",
     control,
   });
-  // Above trick avoids TS complaints in plain JS projects; if using TS, pass the control from useForm.
 
   const onCreate = async (data) => {
     try {
-      // Extract member names from the form data
       const memberNames = (data.members || [])
         .map((m) => m.name)
         .filter(Boolean);
-      // For development: Create an optimistic UI update before API call
+
       const newTeam = {
         name: data.name,
-        owner_user_id: CURRENT_USER_ID,
+        owner_user_id: user.id,
         members: memberNames,
       };
 
-      console.log(newTeam);
-
-      // Update UI optimistically
-      setTeams((prev) => [newTeam, ...prev]);
-
-      // Reset form and close modal
+      const result = await fetch("http://localhost:3000/teams", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...newTeam,
+        }),
+      });
+      console.log(result);
       reset();
       setOpenCreate(false);
     } catch (error) {
