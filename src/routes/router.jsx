@@ -7,6 +7,7 @@ import Tournaments from "../pages/Tournaments/Tournaments";
 import ManageTournament from "../pages/Tournaments/Manage";
 import Teams from "../pages/Teams/Teams";
 import ManageTeams from "../pages/Teams/Manage";
+import Private from "./Private";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +28,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/tournaments",
-        element: <Tournaments />,
+        element: (
+          <Private>
+            <Tournaments />
+          </Private>
+        ),
       },
       {
         path: "/manage-tournament",
@@ -35,7 +40,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/teams",
-        element: <Teams />,
+        element: (
+          <Private>
+            <Teams />
+          </Private>
+        ),
       },
       {
         path: "/manage-team",
