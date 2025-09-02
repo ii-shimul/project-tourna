@@ -17,7 +17,7 @@ export default function TeamsPage() {
     const fetchTeams = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/teams?user_id=${user.id}`
+          `https://project-tourna-server.vercel.app/teams?user_id=${user.id}`
         );
         const result = await response.json();
         // parse the json members arrays too
@@ -91,15 +91,18 @@ export default function TeamsPage() {
         members: memberNames,
       };
 
-      const result = await fetch("http://localhost:3000/teams", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...newTeam,
-        }),
-      });
+      const result = await fetch(
+        "https://project-tourna-server.vercel.app/teams",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...newTeam,
+          }),
+        }
+      );
       console.log(result);
       reset();
       setOpenCreate(false);

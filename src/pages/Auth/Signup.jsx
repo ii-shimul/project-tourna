@@ -8,7 +8,7 @@ const Signup = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
     try {
-      fetch("http://localhost:3000/signup", {
+      fetch("https://project-tourna-server.vercel.app/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -24,7 +24,7 @@ const Signup = () => {
           if (data.success) {
             toast.success(data.message);
             navigate("/");
-            window.location.reload()
+            window.location.reload();
             localStorage.setItem("user", JSON.stringify(data.data));
           } else {
             toast.error(data.error);
