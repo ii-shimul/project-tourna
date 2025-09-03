@@ -34,7 +34,7 @@ export default function TeamsPage() {
       }
     };
     fetchTeams();
-  }, [user, openCreate]);
+  }, [user, openCreate, inspectTeam]);
 
   // Filtered/sorted list
   const filtered = useMemo(() => {
@@ -107,6 +107,23 @@ export default function TeamsPage() {
       }
     } catch (error) {
       console.error("Failed to create team:", error);
+    }
+  };
+
+  const deleteTeam = async (id) => {
+    try {
+      const result = await fetch(`http://localhost:3000/teams/${id}`, {
+        method: "DELETE",
+      });
+      if (result.ok) {
+        toast.success("Team deleted successfully");
+        setInspectTeam(null);
+      } else {
+        toast.error("Failed to delete team.");
+      }
+    } catch (error) {
+      console.log("Error deleting team", error);
+      toast.error("Failed to delete team.");
     }
   };
 
@@ -329,7 +346,13 @@ export default function TeamsPage() {
                 )}
               </ul>
 
-              <div className="modal-action">
+              <div className="modal-action justify-between">
+                <button
+                  onClick={() => deleteTeam(inspectTeam.id)}
+                  className="btn btn-warning"
+                >
+                  Delete
+                </button>
                 <button
                   className="btn btn-ghost"
                   onClick={() => setInspectTeam(null)}
