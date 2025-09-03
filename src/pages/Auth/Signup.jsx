@@ -36,7 +36,7 @@ const Signup = () => {
     }
   };
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex flex-row-reverse justify-between items-center">
       <div className="flex-1">
         <img className="w-full h-full" src={img} alt="" />
       </div>

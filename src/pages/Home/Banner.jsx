@@ -27,10 +27,10 @@ const Banner = () => {
 
           {!user ? (
             <Link
-              to={"/login"}
+              to={"/signup"}
               className="btn bg-black text-white mt-5 roboto w-24 h-12"
             >
-              Login
+              Signup
             </Link>
           ) : (
             <Link

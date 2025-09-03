@@ -75,6 +75,9 @@ const Navbar = () => {
               className="dropdown-content menu bg-base-100 rounded-box z-1 w-30 p-2 shadow-sm"
             >
               <li>
+                <button>{user.name}</button>
+              </li>
+              <li>
                 <button onClick={logOut}>
                   <BiExit /> Logout
                 </button>

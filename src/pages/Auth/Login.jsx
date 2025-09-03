@@ -8,7 +8,7 @@ const Login = () => {
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
-    fetch("https://project-tourna-server.vercel.app/login", {
+    fetch("http://localhost:3000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
