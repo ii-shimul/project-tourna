@@ -4,9 +4,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import Tournaments from "../pages/Tournaments/Tournaments";
-import ManageTournament from "../pages/Tournaments/Manage";
 import Teams from "../pages/Teams/Teams";
-import ManageTeams from "../pages/Teams/Manage";
 import Private from "./Private";
 
 const router = createBrowserRouter([
@@ -35,20 +33,12 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/manage-tournament",
-        element: <ManageTournament />,
-      },
-      {
         path: "/teams",
         element: (
           <Private>
             <Teams />
           </Private>
         ),
-      },
-      {
-        path: "/manage-team",
-        element: <ManageTeams></ManageTeams>,
       },
     ],
   },

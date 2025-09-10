@@ -1,67 +1,143 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import AuthContext from "../../contexts/AuthContext";
+import { toast } from "react-toastify";
 
-const styles = [
-  { label: "Knockout", value: "Knockout" },
-  { label: "League", value: "League" },
-  { label: "Round Robin", value: "Round Robin" },
+const formats = [
+  { label: "Single Elimination", value: "single_elimination" },
+  { label: "Round Robin", value: "round_robin" },
 ];
 
-const lengths = [
-  { label: "Day", value: "Day" },
-  { label: "Week", value: "Week" },
-  { label: "Month", value: "Month" },
+const statuses = [
+  { label: "Upcoming", value: "upcoming" },
+  { label: "Ongoing", value: "ongoing" },
+  { label: "Finished", value: "finished" },
 ];
 
-const seededTournaments = [
-  { id: "t-1001", name: "Project Alpha", style: "Knockout" },
-  { id: "t-1002", name: "Weekend League", style: "League" },
-  { id: "t-1003", name: "Rounders Cup", style: "Round Robin" },
-];
+export default function Tournament() {
+  const { user } = useContext(AuthContext);
 
-export default function CreateTournamentPage() {
   const {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
-  } = useForm();
+    formState: { isSubmitting, errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      format: "single_elimination",
+      start_date: new Date().toISOString().split("T")[0],
+      status: "upcoming",
+    },
+  });
 
   const [tournaments, setTournaments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [teamQuery, setTeamQuery] = useState("");
+  const [selectedTeamIds, setSelectedTeamIds] = useState([]);
+
+  // Load tournaments
+  const loadTournaments = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/tournaments");
+      const json = await res.json();
+
+      setTournaments(json.tournaments);
+    } catch (e) {
+      console.error("Failed to load tournaments", e);
+      toast.error("Failed to load tournaments");
+    }
+  };
+
+  // Load user's teams for selection
+  const loadTeams = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/teams?user_id=${user?.id}`
+      );
+      const json = await res.json();
+      setTeams(json.teams);
+    } catch (e) {
+      console.error("Failed to load teams", e);
+      toast.error("Failed to load teams");
+    }
+  };
 
   useEffect(() => {
-    setTournaments(seededTournaments);
+    loadTournaments();
   }, []);
 
+  useEffect(() => {
+    if (isModalOpen) {
+      loadTeams();
+    }
+  }, [isModalOpen, loadTeams]);
+
+  const filteredTeams = useMemo(() => {
+    const q = teamQuery.trim().toLowerCase();
+    if (!q) return teams;
+    return teams.filter(
+      (t) =>
+        t.name.toLowerCase().includes(q) ||
+        (t.members?.[0] || "").toLowerCase().includes(q)
+    );
+  }, [teams, teamQuery]);
+
+  const toggleTeam = (id) => {
+    setSelectedTeamIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
   const onSubmit = async (data) => {
-    console.log("Create tournament payload:", data);
+    try {
+      const newTournament = {
+        name: data?.name || "Untitled",
+        format: data?.format || "single_elimination",
+        start_date: data?.start_date || new Date().toISOString().split("T")[0],
+        status: data?.status || "upcoming",
+        created_by: user?.id || null,
+        data_json: {
+          teams: selectedTeamIds, // store team IDs in the tournament's JSON
+          matches: [],
+        },
+      };
 
-    const newItem = {
-      id: `t-${Date.now()}`,
-      name: data?.name || "Untitled",
-      style: data?.style || "",
-    };
-    setTournaments((prev) => [newItem, ...prev]);
+      const res = await fetch("http://localhost:3000/tournaments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTournament),
+      });
 
-    reset();
-    setIsModalOpen(false);
+      if (!res.ok) {
+        toast.error("Failed to create tournament");
+        return;
+      }
+
+      toast.success("Tournament created");
+      setIsModalOpen(false);
+      reset();
+      setSelectedTeamIds([]);
+      await loadTournaments();
+    } catch (e) {
+      console.error("Create tournament error", e);
+      toast.error("Failed to create tournament");
+    }
   };
 
   return (
     <div className="bg-base-100">
       <div className="border-b bg-base-100/80 backdrop-blur supports-[backdrop-filter]:bg-base-100/60">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-medium">Tournaments</h1>
+          <h1 className="text-2xl md:text-3xl font-bold">Tournaments</h1>
           <div className="flex items-center gap-2">
-            <button
-              className="btn btn-outline"
-              onClick={() => window.location.reload()}
-            >
+            <button className="btn btn-outline" onClick={loadTournaments}>
               Refresh
             </button>
             <button
-              className="btn btn-primary"
+              className="btn bg-black text-white"
               onClick={() => setIsModalOpen(true)}
             >
               Add tournament
@@ -90,7 +166,30 @@ export default function CreateTournamentPage() {
                     >
                       <div className="sm:col-span-3">
                         <div className="font-medium">{t.name}</div>
-                        <div className="text-sm opacity-70">{t.style}</div>
+                        <div className="text-sm opacity-70">
+                          {t.format === "single_elimination"
+                            ? "Single Elimination"
+                            : "Round Robin"}
+                          <span
+                            className={`ml-2 badge badge-sm ${
+                              t.status === "upcoming"
+                                ? "badge-primary"
+                                : t.status === "ongoing"
+                                ? "badge-warning"
+                                : "badge-success"
+                            }`}
+                          >
+                            {t.status}
+                          </span>
+                        </div>
+                        <div className="text-xs opacity-70 mt-1">
+                          <span className="badge badge-outline badge-xs mr-2">
+                            {t.teams_count} teams
+                          </span>
+                          <span className="badge badge-outline badge-xs">
+                            {t.matches_count} matches
+                          </span>
+                        </div>
                       </div>
                       <div className="sm:col-span-2">
                         <div className="text-sm opacity-70">ID</div>
@@ -98,7 +197,7 @@ export default function CreateTournamentPage() {
                       </div>
                       <div className="sm:col-span-1 text-right">
                         <button className="btn btn-outline btn-sm">
-                          Manage
+                          Details
                         </button>
                       </div>
                     </li>
@@ -127,7 +226,8 @@ export default function CreateTournamentPage() {
                   Use the <b>Add tournament</b> button to open the form.
                 </li>
                 <li>After creation, items appear at the top of the list.</li>
-                <li>Wire the submit handler to your API when ready.</li>
+                <li>Single Elimination is a bracket-style tournament.</li>
+                <li>Round Robin has everyone play against everyone else.</li>
               </ul>
             </div>
           </div>
@@ -138,7 +238,7 @@ export default function CreateTournamentPage() {
         <div className="modal-box max-w-2xl">
           <h3 className="font-semibold text-xl mb-2">Create a tournament</h3>
           <p className="text-sm opacity-70 mb-4">
-            Fill in the details below and submit to create your tournament.
+            Fill in the details below and select teams to participate.
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -149,88 +249,153 @@ export default function CreateTournamentPage() {
                 </div>
                 <input
                   type="text"
-                  className={`input input-bordered w-full`}
+                  className={`input input-bordered w-full ${
+                    errors.name ? "input-error" : ""
+                  }`}
                   {...register("name", {
                     required: "Name is required",
-                    minLength: 3,
+                    minLength: {
+                      value: 3,
+                      message: "Name must be at least 3 characters",
+                    },
                   })}
                 />
+                {errors.name && (
+                  <div className="label">
+                    <span className="label-text-alt text-error">
+                      {errors.name.message}
+                    </span>
+                  </div>
+                )}
               </label>
 
               <label className="form-control w-full">
                 <div className="label">
-                  <span className="label-text">Team size</span>
+                  <span className="label-text">Tournament format</span>
                 </div>
-                <input
-                  type="number"
-                  className={"input input-bordered w-full"}
-                  min={2}
-                  {...register("teamSize", {
-                    required: "Team size is required",
-                    valueAsNumber: true,
-                    min: { value: 2, message: "Minimum 2" },
-                  })}
-                />
+                <select
+                  className="select select-bordered w-full"
+                  {...register("format", { required: true })}
+                >
+                  {formats.map((f) => (
+                    <option key={f.value} value={f.value}>
+                      {f.label}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label className="form-control w-full">
                 <div className="label">
-                  <span className="label-text">Tournament style</span>
+                  <span className="label-text">Start date</span>
+                </div>
+                <input
+                  type="date"
+                  className={`input input-bordered w-full ${
+                    errors.start_date ? "input-error" : ""
+                  }`}
+                  {...register("start_date", {
+                    required: "Start date is required",
+                  })}
+                />
+                {errors.start_date && (
+                  <div className="label">
+                    <span className="label-text-alt text-error">
+                      {errors.start_date.message}
+                    </span>
+                  </div>
+                )}
+              </label>
+
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Status</span>
                 </div>
                 <select
-                  className="select select-bordered"
-                  {...register("style", { required: true })}
+                  className="select select-bordered w-full"
+                  {...register("status", { required: true })}
                 >
-                  {styles.map((s) => (
+                  {statuses.map((s) => (
                     <option key={s.value} value={s.value}>
                       {s.label}
                     </option>
                   ))}
                 </select>
               </label>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Tournament length</span>
-                </div>
-                <select
-                  className="select select-bordered"
-                  {...register("length", { required: true })}
-                >
-                  {lengths.map((l) => (
-                    <option key={l.value} value={l.value}>
-                      {l.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
             </div>
 
-            <label className="form-control">
-              <div className="label">
-                <span className="label-text">Organizer phone number</span>
+            <div className="divider my-1"></div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="label p-0">
+                  <span className="label-text">Add teams</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered input-sm md:input-md"
+                  placeholder="Search teams"
+                  value={teamQuery}
+                  onChange={(e) => setTeamQuery(e.target.value)}
+                />
               </div>
-              <input
-                type="tel"
-                className={"input input-bordered w-full"}
-                {...register("phoneNumber", {
-                  required: "Phone is required",
-                  minLength: { value: 6, message: "Too short" },
+
+              <div className="max-h-60 overflow-auto space-y-2 border rounded-lg p-3 bg-base-100">
+                {filteredTeams.map((t) => {
+                  const checked = selectedTeamIds.includes(t.id);
+                  return (
+                    <label
+                      key={t.id}
+                      className="flex items-center justify-between gap-3 cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          className="checkbox"
+                          checked={checked}
+                          onChange={() => toggleTeam(t.id)}
+                        />
+                        <div>
+                          <div className="font-medium text-sm">{t.name}</div>
+                          <div className="text-xs opacity-70">
+                            {t.members_count} members • Captain:{" "}
+                            {t.members?.[0] || "—"}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="font-mono text-[10px] opacity-60">
+                        {t.id}
+                      </div>
+                    </label>
+                  );
                 })}
-              />
-            </label>
+
+                {filteredTeams.length === 0 && (
+                  <div className="text-sm opacity-70">No teams found.</div>
+                )}
+              </div>
+
+              {selectedTeamIds.length > 0 && (
+                <div className="text-xs opacity-70 mt-2">
+                  Selected: {selectedTeamIds.length} teams
+                </div>
+              )}
+            </div>
 
             <div className="modal-action">
               <button
                 type="button"
                 className="btn btn-ghost"
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setSelectedTeamIds([]);
+                }}
               >
                 Cancel
               </button>
-              <button className="btn btn-primary" disabled={isSubmitting}>
+              <button className="btn bg-black text-white" disabled={isSubmitting}>
                 {isSubmitting ? "Creating..." : "Create"}
               </button>
             </div>
@@ -238,7 +403,10 @@ export default function CreateTournamentPage() {
         </div>
         <div
           className="modal-backdrop"
-          onClick={() => setIsModalOpen(false)}
+          onClick={() => {
+            setIsModalOpen(false);
+            setSelectedTeamIds([]);
+          }}
         ></div>
       </div>
     </div>
