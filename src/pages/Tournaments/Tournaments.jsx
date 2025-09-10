@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import AuthContext from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const formats = [
   { label: "Single Elimination", value: "single_elimination" },
-  { label: "Round Robin", value: "round_robin" },
 ];
 
 const statuses = [
@@ -16,6 +16,7 @@ const statuses = [
 ];
 
 export default function Tournament() {
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   const {
@@ -93,15 +94,96 @@ export default function Tournament() {
 
   const onSubmit = async (data) => {
     try {
+      const nextPowerOfTwo = (n) => {
+        if (n < 1) return 1;
+        let p = 1;
+        while (p < n) p <<= 1;
+        return p;
+      };
+      const generateDbSchemaMatches = (teamIds) => {
+        const size = nextPowerOfTwo(teamIds.length);
+        const seeds = [...teamIds, ...Array(size - teamIds.length).fill(null)];
+
+        let matchId = 1;
+        let round = 1;
+        let roundMatches = [];
+        for (let i = 0; i < size; i += 2) {
+          roundMatches.push({
+            match_id: matchId++,
+            round,
+            slot: i / 2 + 1,
+            status: "scheduled",
+            participants: [
+              { side: 1, team_id: seeds[i], score: 0, is_winner: 0 },
+              { side: 2, team_id: seeds[i + 1], score: 0, is_winner: 0 },
+            ],
+            next_match_id: null,
+            next_slot: null,
+          });
+        }
+
+        const allRounds = [roundMatches];
+        while (roundMatches.length > 1) {
+          round += 1;
+          const nextRound = [];
+          for (let i = 0; i < roundMatches.length; i += 2) {
+            const parent = {
+              match_id: matchId++,
+              round,
+              slot: i / 2 + 1,
+              status: "scheduled",
+              participants: [
+                { side: 1, team_id: null, score: 0, is_winner: 0 },
+                { side: 2, team_id: null, score: 0, is_winner: 0 },
+              ],
+              next_match_id: null,
+              next_slot: null,
+            };
+            roundMatches[i].next_match_id = parent.match_id;
+            roundMatches[i].next_slot = 1;
+            roundMatches[i + 1].next_match_id = parent.match_id;
+            roundMatches[i + 1].next_slot = 2;
+            nextRound.push(parent);
+          }
+          allRounds.push(nextRound);
+          roundMatches = nextRound;
+        }
+
+        // Auto-advance byes into their parents
+        const flat = allRounds.flat();
+        const byId = Object.fromEntries(flat.map((m) => [m.match_id, m]));
+        for (const m of flat) {
+          const [a, b] = m.participants;
+          const aHas = !!a.team_id;
+          const bHas = !!b.team_id;
+          if ((aHas && !bHas) || (!aHas && bHas)) {
+            const winner = aHas ? a.team_id : b.team_id;
+            if (winner && m.next_match_id) {
+              const parent = byId[m.next_match_id];
+              const slotIndex = (m.next_slot || 1) - 1;
+              parent.participants[slotIndex].team_id = winner;
+            }
+          }
+        }
+
+        const root_match_id = allRounds[allRounds.length - 1][0].match_id;
+        return {
+          meta: { root_match_id, next_local_id: matchId },
+          matches: flat,
+        };
+      };
+
+      const generated = generateDbSchemaMatches(selectedTeamIds);
+
       const newTournament = {
         name: data?.name || "Untitled",
         format: data?.format || "single_elimination",
         start_date: data?.start_date || new Date().toISOString().split("T")[0],
-        status: data?.status || "upcoming",
+        status: data?.status || "ongoing",
         created_by: user?.id || null,
         data_json: {
-          teams: selectedTeamIds, // store team IDs in the tournament's JSON
-          matches: [],
+          teams: selectedTeamIds,
+          ...generated,
         },
       };
 
@@ -196,8 +278,11 @@ export default function Tournament() {
                         <div className="font-mono text-xs truncate">{t.id}</div>
                       </div>
                       <div className="sm:col-span-1 text-right">
-                        <button className="btn btn-outline btn-sm">
-                          Details
+                        <button
+                          className="btn btn-outline btn-sm"
+                          onClick={() => navigate(`/tournaments/${t.id}`)}
+                        >
+                          Manage
                         </button>
                       </div>
                     </li>
@@ -395,7 +480,10 @@ export default function Tournament() {
               >
                 Cancel
               </button>
-              <button className="btn bg-black text-white" disabled={isSubmitting}>
+              <button
+                className="btn bg-black text-white"
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? "Creating..." : "Create"}
               </button>
             </div>
