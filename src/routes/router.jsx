@@ -7,6 +7,7 @@ import Tournaments from "../pages/Tournaments/Tournaments";
 import TournamentDetails from "../pages/Tournaments/Details";
 import Teams from "../pages/Teams/Teams";
 import Private from "./Private";
+import About from "../pages/About/About";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
             <Teams />
           </Private>
         ),
+      },
+      {
+        path: "/about",
+        element: <About />,
       },
     ],
   },
