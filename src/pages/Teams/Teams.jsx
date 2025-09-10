@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { BsX } from "react-icons/bs";
 import AuthContext from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 export default function TeamsPage() {
   const { user } = useContext(AuthContext);
@@ -127,10 +129,83 @@ export default function TeamsPage() {
     }
   };
 
+  // Animation variants
+  const headerVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const controlsVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay: 0.2,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const teamVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.9,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
+
   return (
     <div className="bg-base-100">
       {/* Header */}
-      <div className="border-b bg-base-100/80 backdrop-blur supports-[backdrop-filter]:bg-base-100/60">
+      <motion.div
+        className="border-b bg-base-100/80 backdrop-blur supports-[backdrop-filter]:bg-base-100/60"
+        initial="hidden"
+        animate="visible"
+        variants={headerVariants}
+      >
         <div className="container mx-auto px-4 py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-semibold">Teams</h1>
@@ -138,19 +213,28 @@ export default function TeamsPage() {
               Create, filter, and manage teams across your tournaments.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <motion.div
+            className="flex items-center gap-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <button
               className="btn bg-black text-white roboto"
               onClick={() => setOpenCreate(true)}
             >
               Add team
             </button>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Controls */}
-      <div className="container mx-auto px-4 py-4">
+      <motion.div
+        className="container mx-auto px-4 py-4"
+        initial="hidden"
+        animate="visible"
+        variants={controlsVariants}
+      >
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
           <label className="input input-bordered flex items-center gap-2 md:max-w-sm">
             <svg
@@ -179,23 +263,42 @@ export default function TeamsPage() {
             <option>Members</option>
           </select>
         </div>
-      </div>
+      </motion.div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 pb-10">
+      <motion.div
+        className="container mx-auto px-4 pb-10"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
         <ul className={"space-y-3 grid grid-cols-1 lg:grid-cols-2 gap-3"}>
-          {filtered.map((t) => (
-            <li
+          {filtered.map((t, index) => (
+            <motion.li
               key={t.id}
               className="grid grid-cols-2 h-full sm:grid-cols-6 gap-3 items-center bg-base-100 rounded-xl p-4 border"
+              variants={teamVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover={{
+                scale: 1.01,
+                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              }}
+              transition={{ delay: index * 0.05 }}
             >
               <div className="sm:col-span-3">
                 <div className="font-medium flex items-center gap-2">
-                  <div className="bg-black text-white text-center place-content-center rounded-xl w-8 h-8">
+                  <motion.div
+                    className="bg-black text-white text-center place-content-center rounded-xl w-8 h-8"
+                    initial={{ rotate: -10 }}
+                    animate={{ rotate: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 + 0.2 }}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                  >
                     <span className="text-sm font-bold">
                       {t.name.charAt(0).toUpperCase()}
                     </span>
-                  </div>
+                  </motion.div>
                   {t.name}
                 </div>
                 <div className="text-sm opacity-70 mt-2">
@@ -214,160 +317,259 @@ export default function TeamsPage() {
                 </div>
               </div>
               <div className="sm:col-span-1 text-right">
-                <button
+                <motion.button
                   className="btn btn-outline btn-sm"
                   onClick={() => setInspectTeam(t)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   Details
-                </button>
+                </motion.button>
               </div>
-            </li>
+            </motion.li>
           ))}
 
           {filtered.length === 0 && (
-            <li className="col-span-full">
+            <motion.li
+              className="col-span-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               <div className="alert">
                 <span className="text-lg">
                   No teams found. Try clearing search or filters.
                 </span>
               </div>
-            </li>
+            </motion.li>
           )}
         </ul>
-      </div>
+      </motion.div>
 
       {/* Create Team Modal */}
-      <div className={`modal ${openCreate ? "modal-open" : ""}`}>
-        <div className="modal-box max-w-xl">
-          <h3 className="font-semibold text-xl">Create a team</h3>
-          <p className="text-sm opacity-70 mb-4">Add a team with members.</p>
+      <AnimatePresence>
+        {openCreate && (
+          <div className="modal modal-open">
+            <motion.div
+              className="modal-box max-w-xl"
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <h3 className="font-semibold text-xl">Create a team</h3>
+              <p className="text-sm opacity-70 mb-4">
+                Add a team with members.
+              </p>
 
-          <form onSubmit={handleSubmit(onCreate)} className="space-y-4">
-            <label className="form-control flex items-center gap-2">
-              <div className="label">
-                <span className="label-text">Team name</span>
-              </div>
-              <input
-                className="input input-bordered w-full"
-                type="text"
-                {...register("name", { required: "Required", minLength: 2 })}
-              />
-            </label>
-
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="label p-0">
-                  <span className="label-text">
-                    Members (First member is the captain)
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-sm"
-                  onClick={() => append({ name: "" })}
-                >
-                  Add member
-                </button>
-              </div>
-              <div className="space-y-2">
-                {fields.map((field, idx) => (
-                  <div key={field.id} className="flex items-center gap-2">
-                    <input
-                      className="input input-bordered w-full"
-                      placeholder={`Member #${idx + 1} name`}
-                      {...register(`members.${idx}.name`)}
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-square"
-                      onClick={() => remove(idx)}
-                      title="Remove"
-                    >
-                      <BsX />
-                    </button>
+              <form onSubmit={handleSubmit(onCreate)} className="space-y-4">
+                <label className="form-control flex items-center gap-2">
+                  <div className="label">
+                    <span className="label-text">Team name</span>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <motion.input
+                    className="input input-bordered w-full"
+                    type="text"
+                    {...register("name", {
+                      required: "Required",
+                      minLength: 2,
+                    })}
+                    whileFocus={{ scale: 1.01 }}
+                  />
+                </label>
 
-            <div className="modal-action">
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={() => setOpenCreate(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn bg-black text-white"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Creating..." : "Create team"}
-              </button>
-            </div>
-          </form>
-        </div>
-        <div
-          className="modal-backdrop"
-          onClick={() => setOpenCreate(false)}
-        ></div>
-      </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="label p-0">
+                      <span className="label-text">
+                        Members (First member is the captain)
+                      </span>
+                    </div>
+                    <motion.button
+                      type="button"
+                      className="btn btn-sm"
+                      onClick={() => append({ name: "" })}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Add member
+                    </motion.button>
+                  </div>
+                  <motion.div
+                    className="space-y-2"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: {
+                        opacity: 1,
+                        transition: {
+                          staggerChildren: 0.1,
+                        },
+                      },
+                    }}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {fields.map((field, idx) => (
+                      <motion.div
+                        key={field.id}
+                        className="flex items-center gap-2"
+                        variants={{
+                          hidden: { opacity: 0, x: -10 },
+                          visible: { opacity: 1, x: 0 },
+                        }}
+                      >
+                        <input
+                          className="input input-bordered w-full"
+                          placeholder={`Member #${idx + 1} name`}
+                          {...register(`members.${idx}.name`)}
+                        />
+                        <motion.button
+                          type="button"
+                          className="btn btn-square"
+                          onClick={() => remove(idx)}
+                          title="Remove"
+                          whileHover={{ scale: 1.1, rotate: 90 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <BsX />
+                        </motion.button>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </div>
+
+                <div className="modal-action">
+                  <motion.button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={() => setOpenCreate(false)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Cancel
+                  </motion.button>
+                  <motion.button
+                    className="btn bg-black text-white"
+                    disabled={isSubmitting}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {isSubmitting ? "Creating..." : "Create team"}
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+            <div
+              className="modal-backdrop"
+              onClick={() => setOpenCreate(false)}
+            ></div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* View modal */}
-      <div className={`modal ${inspectTeam ? "modal-open" : ""}`}>
-        <div className="modal-box max-w-sm">
-          {inspectTeam && (
-            <div className="space-y-3">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-semibold text-xl">{inspectTeam.name}</h3>
-                  <div className="text-sm opacity-70">
-                    Captain: {inspectTeam.members[0] || "—"}
+      <AnimatePresence>
+        {inspectTeam && (
+          <div className="modal modal-open">
+            <motion.div
+              className="modal-box max-w-sm"
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <div className="space-y-3">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-semibold text-xl">
+                      {inspectTeam.name}
+                    </h3>
+                    <div className="text-sm opacity-70">
+                      Captain: {inspectTeam.members[0] || "—"}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="badge badge-neutral">
+                      {inspectTeam.members_count} members
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="badge badge-neutral">
-                    {inspectTeam.members_count} members
-                  </div>
+
+                <div className="divider m-0"></div>
+
+                <motion.ul
+                  className="space-y-1"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: {
+                        staggerChildren: 0.1,
+                        delayChildren: 0.2,
+                      },
+                    },
+                  }}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {inspectTeam.members.map((m, i) => (
+                    <motion.li
+                      key={i}
+                      className="flex items-center gap-2 text-sm"
+                      variants={{
+                        hidden: { opacity: 0, x: -10 },
+                        visible: { opacity: 1, x: 0 },
+                      }}
+                    >
+                      <span className="badge badge-xs">{i + 1}</span>
+                      <span>{m}</span>
+                    </motion.li>
+                  ))}
+                  {inspectTeam.members.length === 0 && (
+                    <motion.li
+                      className="text-sm opacity-70"
+                      variants={{
+                        hidden: { opacity: 0 },
+                        visible: { opacity: 1 },
+                      }}
+                    >
+                      No members listed.
+                    </motion.li>
+                  )}
+                </motion.ul>
+
+                <div className="modal-action justify-between">
+                  <motion.button
+                    onClick={() => deleteTeam(inspectTeam.id)}
+                    className="btn btn-warning"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Delete
+                  </motion.button>
+                  <motion.button
+                    className="btn btn-ghost"
+                    onClick={() => setInspectTeam(null)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Close
+                  </motion.button>
                 </div>
               </div>
-
-              <div className="divider m-0"></div>
-
-              <ul className="space-y-1">
-                {inspectTeam.members.map((m, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
-                    <span className="badge badge-xs">{i + 1}</span>
-                    <span>{m}</span>
-                  </li>
-                ))}
-                {inspectTeam.members.length === 0 && (
-                  <li className="text-sm opacity-70">No members listed.</li>
-                )}
-              </ul>
-
-              <div className="modal-action justify-between">
-                <button
-                  onClick={() => deleteTeam(inspectTeam.id)}
-                  className="btn btn-warning"
-                >
-                  Delete
-                </button>
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => setInspectTeam(null)}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-        <div
-          className="modal-backdrop"
-          onClick={() => setInspectTeam(null)}
-        ></div>
-      </div>
+            </motion.div>
+            <div
+              className="modal-backdrop"
+              onClick={() => setInspectTeam(null)}
+            ></div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
+// Framer Motion requires AnimatePresence for exit animations
+const AnimatePresence = ({ children }) => {
+  return children;
+};

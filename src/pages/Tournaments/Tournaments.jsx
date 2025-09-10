@@ -1,13 +1,13 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import AuthContext from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
-const formats = [
-  { label: "Single Elimination", value: "single_elimination" },
-];
+const formats = [{ label: "Single Elimination", value: "single_elimination" }];
 
 const statuses = [
   { label: "Upcoming", value: "upcoming" },
@@ -210,21 +210,45 @@ export default function Tournament() {
   };
 
   return (
-    <div className="bg-base-100">
+    <motion.div
+      className="bg-base-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="border-b bg-base-100/80 backdrop-blur supports-[backdrop-filter]:bg-base-100/60">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold">Tournaments</h1>
-          <div className="flex items-center gap-2">
-            <button className="btn btn-outline" onClick={loadTournaments}>
+          <motion.h1
+            className="text-2xl md:text-3xl font-bold"
+            initial={{ x: -30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            Tournaments
+          </motion.h1>
+          <motion.div
+            className="flex items-center gap-2"
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <motion.button
+              className="btn btn-outline"
+              onClick={loadTournaments}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Refresh
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               className="btn bg-black text-white"
               onClick={() => setIsModalOpen(true)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               Add tournament
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </div>
 
@@ -241,10 +265,14 @@ export default function Tournament() {
 
               {tournaments.length ? (
                 <ul className="mt-4 space-y-3">
-                  {tournaments.map((t) => (
-                    <li
+                  {tournaments.map((t, index) => (
+                    <motion.li
                       key={t.id}
                       className="grid grid-cols-1 sm:grid-cols-6 gap-3 items-center bg-base-100 rounded-xl p-4 border"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      whileHover={{ y: -2, transition: { duration: 0.2 } }}
                     >
                       <div className="sm:col-span-3">
                         <div className="font-medium">{t.name}</div>
@@ -278,14 +306,16 @@ export default function Tournament() {
                         <div className="font-mono text-xs truncate">{t.id}</div>
                       </div>
                       <div className="sm:col-span-1 text-right">
-                        <button
+                        <motion.button
                           className="btn btn-outline btn-sm"
                           onClick={() => navigate(`/tournaments/${t.id}`)}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                         >
                           Manage
-                        </button>
+                        </motion.button>
                       </div>
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
               ) : (
@@ -495,8 +525,10 @@ export default function Tournament() {
             setIsModalOpen(false);
             setSelectedTeamIds([]);
           }}
-        ></div>
+        >
+          {" "}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

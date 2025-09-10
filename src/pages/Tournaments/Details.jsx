@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AuthContext from "../../contexts/AuthContext";
+import { motion } from "framer-motion";
 
 // Utilities to construct and update a single-elimination bracket (DB schema)
 function nextPowerOfTwo(n) {
@@ -284,10 +286,19 @@ export default function TournamentDetails() {
   }, [tournament, teamMap]);
 
   return (
-    <div className="bg-base-100">
+    <motion.div
+      className="bg-base-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="border-b bg-base-100/80 backdrop-blur supports-[backdrop-filter]:bg-base-100/60">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <div>
+          <motion.div
+            initial={{ x: -30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
             <h1 className="text-2xl md:text-3xl font-bold">
               {tournament?.name || "Tournament"}
             </h1>
@@ -307,30 +318,55 @@ export default function TournamentDetails() {
                 {tournament?.status}
               </span>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="btn btn-outline" onClick={() => navigate(-1)}>
+          </motion.div>
+          <motion.div
+            className="flex items-center gap-2"
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <motion.button
+              className="btn btn-outline"
+              onClick={() => navigate(-1)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Back
-            </button>
-            <button className="btn" disabled={saving}>
+            </motion.button>
+            <motion.button
+              className="btn"
+              disabled={saving}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               {saving ? "Saving..." : "Saved"}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               className="btn btn-error"
               disabled={deleting}
               onClick={deleteTournament}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {deleting ? "Deleting..." : "Delete"}
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-6">
         {/* Tournament Info */}
         {tournament && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="card bg-base-200 shadow">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <motion.div
+              className="card bg-base-200 shadow"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
               <div className="card-body p-4">
                 <h3 className="card-title text-sm">Start Date</h3>
                 <p className="text-lg font-semibold">
@@ -339,8 +375,11 @@ export default function TournamentDetails() {
                     : "Not set"}
                 </p>
               </div>
-            </div>
-            <div className="card bg-base-200 shadow">
+            </motion.div>
+            <motion.div
+              className="card bg-base-200 shadow"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
               <div className="card-body p-4">
                 <h3 className="card-title text-sm">Format</h3>
                 <p className="text-lg font-semibold">
@@ -349,24 +388,30 @@ export default function TournamentDetails() {
                     : "Round Robin"}
                 </p>
               </div>
-            </div>
-            <div className="card bg-base-200 shadow">
+            </motion.div>
+            <motion.div
+              className="card bg-base-200 shadow"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
               <div className="card-body p-4">
                 <h3 className="card-title text-sm">Teams</h3>
                 <p className="text-lg font-semibold">
                   {tournament.data_json?.teams?.length || 0}
                 </p>
               </div>
-            </div>
-            <div className="card bg-base-200 shadow">
+            </motion.div>
+            <motion.div
+              className="card bg-base-200 shadow"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
               <div className="card-body p-4">
                 <h3 className="card-title text-sm">Matches</h3>
                 <p className="text-lg font-semibold">
                   {tournament.data_json?.matches?.length || 0}
                 </p>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
 
         {tournament?.data_json?.teams?.length < 2 && (
@@ -376,10 +421,24 @@ export default function TournamentDetails() {
         )}
 
         {internalRounds.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
             {internalRounds.map((round, idx) => (
-              <div key={idx} className="space-y-3">
-                <div className="card bg-base-200 shadow">
+              <motion.div
+                key={idx}
+                className="space-y-3"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 + idx * 0.1 }}
+              >
+                <motion.div
+                  className="card bg-base-200 shadow"
+                  whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                >
                   <div className="card-body py-3 px-4">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold">{roundTitles[idx]}</h3>
@@ -388,9 +447,9 @@ export default function TournamentDetails() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                {round.map((m) => {
+                {round.map((m, matchIdx) => {
                   const a = m.participants[0];
                   const b = m.participants[1];
                   const aName = a?.team_id
@@ -400,13 +459,23 @@ export default function TournamentDetails() {
                     ? teamMap.get(b.team_id)?.name || `Team ${b.team_id}`
                     : "— bye —";
                   return (
-                    <div key={m.match_id} className="card bg-base-100 border">
+                    <motion.div
+                      key={m.match_id}
+                      className="card bg-base-100 border"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.6 + idx * 0.1 + matchIdx * 0.05,
+                      }}
+                      whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                    >
                       <div className="card-body p-4">
                         <div className="text-xs opacity-70 mb-1">
                           Match #{m.match_id}
                         </div>
                         <div className="space-y-2">
-                          <button
+                          <motion.button
                             className={`w-full btn btn-sm justify-between ${
                               a?.is_winner ? "btn-primary" : "btn-outline"
                             }`}
@@ -414,13 +483,15 @@ export default function TournamentDetails() {
                             onClick={() =>
                               a?.team_id && handlePickWinner(m, a.team_id)
                             }
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                           >
                             <span className="truncate text-left">{aName}</span>
                             {a?.is_winner ? (
                               <span className="badge badge-xs">WIN</span>
                             ) : null}
-                          </button>
-                          <button
+                          </motion.button>
+                          <motion.button
                             className={`w-full btn btn-sm justify-between ${
                               b?.is_winner ? "btn-primary" : "btn-outline"
                             }`}
@@ -428,12 +499,14 @@ export default function TournamentDetails() {
                             onClick={() =>
                               b?.team_id && handlePickWinner(m, b.team_id)
                             }
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                           >
                             <span className="truncate text-left">{bName}</span>
                             {b?.is_winner ? (
                               <span className="badge badge-xs">WIN</span>
                             ) : null}
-                          </button>
+                          </motion.button>
                         </div>
                         <div className="divider my-2"></div>
                         <div className="text-xs flex items-center justify-between">
@@ -447,33 +520,49 @@ export default function TournamentDetails() {
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
-              </div>
+              </motion.div>
             ))}
 
             {/* Champion card */}
-            <div className="space-y-3">
-              <div className="card bg-base-200 shadow">
+            <motion.div
+              className="space-y-3"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <motion.div
+                className="card bg-base-200 shadow"
+                whileHover={{ y: -2, transition: { duration: 0.2 } }}
+              >
                 <div className="card-body py-3 px-4">
                   <h3 className="font-semibold">Champion</h3>
                 </div>
-              </div>
-              <div className="card bg-base-100 border">
+              </motion.div>
+              <motion.div
+                className="card bg-base-100 border"
+                whileHover={{ y: -2, transition: { duration: 0.2 } }}
+              >
                 <div className="card-body items-center">
-                  <div className="text-2xl font-extrabold tracking-wide">
+                  <motion.div
+                    className="text-2xl font-extrabold tracking-wide"
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.5, delay: 1 }}
+                  >
                     {championTeam?.name || "—"}
-                  </div>
+                  </motion.div>
                   <div className="text-xs opacity-60">
                     {championTeam ? "Congratulations!" : "Awaiting results"}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

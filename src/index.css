@@ -6,6 +6,7 @@
 .bebas {
   font-family: "Bebas Neue", sans-serif;
 }
+
 /* If you want to use Anton for some elements */
 .anton {
   font-family: "Anton", sans-serif;
@@ -129,4 +130,27 @@
   font-family: "Poppins", sans-serif;
   font-weight: 900;
   font-style: italic;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

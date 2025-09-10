@@ -1,11 +1,19 @@
+/* eslint-disable no-unused-vars */
 import img from "../../assets/signup.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const Login = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
+
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
 
   const onSubmit = (data) => {
     fetch("http://localhost:3000/login", {
@@ -35,23 +43,69 @@ const Login = () => {
       });
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.7, ease: "easeOut" },
+    },
+  };
+
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex-1">
+    <div className="flex justify-between items-center" ref={ref}>
+      <motion.div
+        className="flex-1"
+        variants={imageVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <img className="w-full h-full" src={img} alt="" />
-      </div>
-      <div className="flex-1">
+      </motion.div>
+      <motion.div
+        className="flex-1"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="max-w-3/4 mx-auto">
-          <h1 className="bebas text-7xl">Your gateway to the journey</h1>
-          <p className="anton mb-10">
+          <motion.h1 variants={itemVariants} className="bebas text-7xl">
+            Your gateway to the journey
+          </motion.h1>
+          <motion.p variants={itemVariants} className="anton mb-10">
             Ready to embark your next tournament? Log in now and let the MKS
             manage you there. Your dream tournament is just a click away !{" "}
-          </p>
-          <form
+          </motion.p>
+          <motion.form
             onSubmit={handleSubmit(onSubmit)}
             className="anton flex flex-col gap-5"
+            variants={containerVariants}
           >
-            <label className="input validator w-full">
+            <motion.label
+              className="input validator w-full"
+              variants={itemVariants}
+            >
               <svg
                 className="h-[1em] opacity-50"
                 xmlns="http://www.w3.org/2000/svg"
@@ -74,12 +128,18 @@ const Login = () => {
                 required
                 {...register("email")}
               />
-            </label>
-            <div className="validator-hint hidden">
+            </motion.label>
+            <motion.div
+              className="validator-hint hidden"
+              variants={itemVariants}
+            >
               Enter valid email address
-            </div>
+            </motion.div>
 
-            <label className="input validator w-full">
+            <motion.label
+              className="input validator w-full"
+              variants={itemVariants}
+            >
               <svg
                 className="h-[1em] opacity-50"
                 xmlns="http://www.w3.org/2000/svg"
@@ -110,25 +170,34 @@ const Login = () => {
                 title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
                 {...register("password")}
               />
-            </label>
-            <p className="validator-hint hidden">
+            </motion.label>
+            <motion.p className="validator-hint hidden" variants={itemVariants}>
               Must be more than 8 characters, including
               <br />
               At least one number <br />
               At least one lowercase letter <br />
               At least one uppercase letter
-            </p>
-            <button class="btn btn-block">Login</button>
-          </form>
-          <div className="divider">or</div>
-          <p className="anton text-center">
+            </motion.p>
+            <motion.button
+              className="btn btn-block"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Login
+            </motion.button>
+          </motion.form>
+          <motion.div className="divider" variants={itemVariants}>
+            or
+          </motion.div>
+          <motion.p className="anton text-center" variants={itemVariants}>
             Don't have an account?{" "}
             <Link to={"/signup"}>
               <span className="underline">Signup now.</span>
             </Link>
-          </p>
+          </motion.p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
