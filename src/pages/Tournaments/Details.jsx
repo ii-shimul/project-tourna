@@ -116,7 +116,9 @@ export default function TournamentDetails() {
 
   const loadTournament = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/tournaments/${id}`);
+      const res = await fetch(
+        `https://project-tourna-server.vercel.app/tournaments/${id}`
+      );
       const json = await res.json();
       let t = json.tournament[0] || json;
       if (typeof t.data_json === "string") {
@@ -139,7 +141,9 @@ export default function TournamentDetails() {
         setTeams([]);
         return;
       }
-      const res = await fetch(`http://localhost:3000/teams?user_id=${user.id}`);
+      const res = await fetch(
+        `https://project-tourna-server.vercel.app/teams?user_id=${user.id}`
+      );
       const json = await res.json();
       setTeams(json.teams.filter((t) => teamIds.includes(t.id)));
     } catch (e) {
@@ -191,14 +195,17 @@ export default function TournamentDetails() {
   const saveBracket = async (nextTournament) => {
     try {
       setSaving(true);
-      const res = await fetch(`http://localhost:3000/tournaments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data_json: nextTournament.data_json,
-          status: nextTournament.status,
-        }),
-      });
+      const res = await fetch(
+        `https://project-tourna-server.vercel.app/tournaments/${id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data_json: nextTournament.data_json,
+            status: nextTournament.status,
+          }),
+        }
+      );
       if (!res.ok) throw new Error("Save failed");
     } catch (e) {
       console.error("Failed to save bracket", e);
@@ -218,9 +225,12 @@ export default function TournamentDetails() {
     }
     try {
       setDeleting(true);
-      const res = await fetch(`http://localhost:3000/tournaments/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `https://project-tourna-server.vercel.app/tournaments/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!res.ok) throw new Error("Delete failed");
       toast.success("Tournament deleted");
       navigate("/tournaments");

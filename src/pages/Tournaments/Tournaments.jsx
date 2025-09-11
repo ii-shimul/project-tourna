@@ -42,7 +42,9 @@ export default function Tournament() {
   // Load tournaments
   const loadTournaments = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/tournaments?userId=${user.id}`);
+      const res = await fetch(
+        `https://project-tourna-server.vercel.app/tournaments?userId=${user.id}`
+      );
       const json = await res.json();
 
       setTournaments(json.tournaments);
@@ -56,7 +58,7 @@ export default function Tournament() {
   const loadTeams = async () => {
     try {
       const res = await fetch(
-        `http://localhost:3000/teams?user_id=${user?.id}`
+        `https://project-tourna-server.vercel.app/teams?user_id=${user?.id}`
       );
       const json = await res.json();
       setTeams(json.teams);
@@ -187,11 +189,14 @@ export default function Tournament() {
         },
       };
 
-      const res = await fetch("http://localhost:3000/tournaments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newTournament),
-      });
+      const res = await fetch(
+        "https://project-tourna-server.vercel.app/tournaments",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newTournament),
+        }
+      );
 
       if (!res.ok) {
         toast.error("Failed to create tournament");

@@ -16,7 +16,7 @@ const Signup = () => {
   });
   const onSubmit = (data) => {
     try {
-      fetch("http://localhost:3000/signup", {
+      fetch("https://project-tourna-server.vercel.app/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
