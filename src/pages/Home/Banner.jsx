@@ -91,19 +91,18 @@ const Banner = () => {
           </motion.p>
 
           {!user ? (
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              whileHover="hover"
-              variants={buttonVariants}
-            >
-              <Link
+            <div>
+              <motion.Link
+                initial="hidden"
+                animate="visible"
+                whileHover="hover"
+                variants={buttonVariants}
                 to={"/signup"}
                 className="btn bg-black text-white mt-5 roboto w-24 h-12"
               >
                 Signup
-              </Link>
-            </motion.div>
+              </motion.Link>
+            </div>
           ) : (
             <div>
               <motion.Link

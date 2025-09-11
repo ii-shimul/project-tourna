@@ -42,7 +42,7 @@ export default function Tournament() {
   // Load tournaments
   const loadTournaments = async () => {
     try {
-      const res = await fetch("http://localhost:3000/tournaments");
+      const res = await fetch(`http://localhost:3000/tournaments?userId=${user.id}`);
       const json = await res.json();
 
       setTournaments(json.tournaments);
@@ -208,6 +208,7 @@ export default function Tournament() {
       toast.error("Failed to create tournament");
     }
   };
+  console.log(tournaments);
 
   return (
     <motion.div
@@ -259,11 +260,11 @@ export default function Tournament() {
               <div className="flex items-center justify-between">
                 <h2 className="card-title">Existing tournaments</h2>
                 <span className="badge badge-neutral">
-                  {tournaments.length}
+                  {tournaments?.length}
                 </span>
               </div>
 
-              {tournaments.length ? (
+              {tournaments?.length ? (
                 <ul className="mt-4 space-y-3">
                   {tournaments.map((t, index) => (
                     <motion.li
