@@ -213,7 +213,6 @@ export default function Tournament() {
       toast.error("Failed to create tournament");
     }
   };
-  console.log(tournaments);
 
   return (
     <motion.div
@@ -223,7 +222,7 @@ export default function Tournament() {
       transition={{ duration: 0.5 }}
     >
       <div className="border-b bg-base-100/80 backdrop-blur supports-[backdrop-filter]:bg-base-100/60">
-        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-6 flex items-center justify-between max-sm:flex-col max-sm:gap-3">
           <motion.h1
             className="text-2xl md:text-3xl font-bold"
             initial={{ x: -30, opacity: 0 }}
@@ -258,7 +257,7 @@ export default function Tournament() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="container mx-auto px-2 py-4 sm:py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <section className="lg:col-span-2">
           <div className="card bg-base-200 shadow">
             <div className="card-body">
@@ -280,40 +279,48 @@ export default function Tournament() {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       whileHover={{ y: -2, transition: { duration: 0.2 } }}
                     >
-                      <div className="sm:col-span-3">
-                        <div className="font-medium">{t.name}</div>
-                        <div className="text-sm opacity-70">
-                          {t.format === "single_elimination"
-                            ? "Single Elimination"
-                            : "Round Robin"}
-                          <span
-                            className={`ml-2 badge badge-sm ${
-                              t.status === "upcoming"
-                                ? "badge-primary"
-                                : t.status === "ongoing"
-                                ? "badge-warning"
-                                : "badge-success"
-                            }`}
-                          >
-                            {t.status}
-                          </span>
+                      <div className="sm:col-span-3 max-sm:flex max-sm:items-center max-sm:gap-6">
+                        <div>
+                          <div className="font-medium text-lg">{t.name}</div>
+                          <div className="text-sm opacity-70">
+                            {t.format === "single_elimination"
+                              ? "Single Elimination"
+                              : "Round Robin"}
+                            <span
+                              className={`ml-2 badge badge-sm ${
+                                t.status === "upcoming"
+                                  ? "badge-primary"
+                                  : t.status === "ongoing"
+                                  ? "badge-warning"
+                                  : "badge-success"
+                              }`}
+                            >
+                              {t.status}
+                            </span>
+                          </div>
+                          <div className="text-xs opacity-70 mt-1">
+                            <span className="badge badge-outline badge-xs mr-2">
+                              {t.teams_count} teams
+                            </span>
+                            <span className="badge badge-outline badge-xs">
+                              {t.matches_count} matches
+                            </span>
+                          </div>
                         </div>
-                        <div className="text-xs opacity-70 mt-1">
-                          <span className="badge badge-outline badge-xs mr-2">
-                            {t.teams_count} teams
-                          </span>
-                          <span className="badge badge-outline badge-xs">
-                            {t.matches_count} matches
-                          </span>
+                        <div className="sm:hidden sm:col-span-2">
+                          <div className="text-sm opacity-70">ID</div>
+                          <div className="font-mono text-xs truncate">
+                            {t.id}
+                          </div>
                         </div>
                       </div>
-                      <div className="sm:col-span-2">
+                      <div className="max-sm:hidden sm:col-span-2">
                         <div className="text-sm opacity-70">ID</div>
                         <div className="font-mono text-xs truncate">{t.id}</div>
                       </div>
-                      <div className="sm:col-span-1 text-right">
+                      <div className="sm:col-span-1 sm:text-right max-sm:w-full">
                         <motion.button
-                          className="btn btn-outline btn-sm"
+                          className="btn btn-outline btn-sm max-sm:w-full"
                           onClick={() => navigate(`/tournaments/${t.id}`)}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}

@@ -7,7 +7,7 @@ import { FaYoutube } from "react-icons/fa";
 const Footer = () => {
 	return (
 		<div>
-			<div className="lg:flex justify-between lg:p-5 p-5 mt-25 mb-5 border-b-2  ">
+			<div className="lg:flex justify-between lg:p-5 p-5 lg:my-5 border-b-2  ">
 				<div>
 					<h1 className="bebas text-xl">Tourna</h1>
 					<p className="roboto font-bold">Sylhet, Bangladesh</p>
