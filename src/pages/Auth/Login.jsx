@@ -74,7 +74,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-between items-center" ref={ref}>
+    <div className="flex justify-between items-center max-lg:flex-col" ref={ref}>
       <motion.div
         className="flex-1"
         variants={imageVariants}
@@ -89,11 +89,11 @@ const Login = () => {
         initial="hidden"
         animate="visible"
       >
-        <div className="max-w-3/4 mx-auto">
-          <motion.h1 variants={itemVariants} className="bebas text-7xl">
+        <div className="max-sm:px-10 sm:max-w-3/4 mx-auto">
+          <motion.h1 variants={itemVariants} className="bebas text-4xl md:text-7xl">
             Your gateway to the journey
           </motion.h1>
-          <motion.p variants={itemVariants} className="anton mb-10">
+          <motion.p variants={itemVariants} className="anton max-sm:text-sm mb-5 sm:mb-10">
             Ready to embark your next tournament? Log in now and let the MKS
             manage you there. Your dream tournament is just a click away !{" "}
           </motion.p>

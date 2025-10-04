@@ -75,7 +75,7 @@ const Signup = () => {
 
   return (
     <div
-      className="flex flex-row-reverse justify-between items-center"
+      className="flex flex-row-reverse justify-between items-center max-md:flex-col"
       ref={ref}
     >
       <motion.div
@@ -92,11 +92,17 @@ const Signup = () => {
         initial="hidden"
         animate="visible"
       >
-        <div className="max-w-3/4 mx-auto">
-          <motion.h1 className="bebas text-7xl" variants={itemVariants}>
+        <div className="max-sm:px-10 sm:max-w-3/4 mx-auto">
+          <motion.h1
+            className="bebas text-4xl md:text-5xl lg:text-7xl"
+            variants={itemVariants}
+          >
             You're going to love every bit of it
           </motion.h1>
-          <motion.p className="anton mb-10" variants={itemVariants}>
+          <motion.p
+            className="anton max-sm:text-sm mb-5 lg:mb-10"
+            variants={itemVariants}
+          >
             Ready to embark your next tournament? Signup now and let the MKS
             manage you there. Your dream tournament is just a click away!{" "}
           </motion.p>
