@@ -205,7 +205,6 @@ export default function TeamsPage() {
 
   return (
     <div className="bg-base-100">
-      {/* Header */}
       <motion.div
         className="border-b bg-base-100/80 backdrop-blur supports-[backdrop-filter]:bg-base-100/60"
         initial="hidden"
@@ -220,7 +219,7 @@ export default function TeamsPage() {
             </p>
           </div>
           <motion.div
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-min"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -234,7 +233,6 @@ export default function TeamsPage() {
         </div>
       </motion.div>
 
-      {/* Controls */}
       <motion.div
         className="container mx-auto px-4 py-4"
         initial="hidden"
@@ -242,7 +240,7 @@ export default function TeamsPage() {
         variants={controlsVariants}
       >
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
-          <label className="input input-bordered flex items-center gap-2 md:max-w-sm">
+          <label className="input input-bordered flex items-center gap-2 max-sm:w-full md:w-60">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -271,7 +269,6 @@ export default function TeamsPage() {
         </div>
       </motion.div>
 
-      {/* Content */}
       <motion.div
         className="container mx-auto px-4 pb-10"
         initial="hidden"
@@ -282,7 +279,7 @@ export default function TeamsPage() {
           {filtered.map((t, index) => (
             <motion.li
               key={t.id}
-              className="grid grid-cols-2 h-full sm:grid-cols-6 gap-3 items-center bg-base-100 rounded-xl p-4 border"
+              className="grid grid-cols-1 h-full sm:grid-cols-6 gap-3 items-center bg-base-100 rounded-xl p-4 border"
               variants={teamVariants}
               initial="hidden"
               animate="visible"
@@ -292,39 +289,47 @@ export default function TeamsPage() {
               }}
               transition={{ delay: index * 0.05 }}
             >
-              <div className="sm:col-span-3">
-                <div className="font-medium flex items-center gap-2">
-                  <motion.div
-                    className="bg-black text-white text-center place-content-center rounded-xl w-8 h-8"
-                    initial={{ rotate: -10 }}
-                    animate={{ rotate: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 + 0.2 }}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                  >
-                    <span className="text-sm font-bold">
-                      {t.name.charAt(0).toUpperCase()}
+              <div className="sm:col-span-3 max-sm:flex max-sm:items-center max-sm:justify-between">
+                <div className="">
+                  <div className="font-medium flex items-center gap-2">
+                    <motion.div
+                      className="bg-black text-white text-center place-content-center rounded-xl w-8 h-8"
+                      initial={{ rotate: -10 }}
+                      animate={{ rotate: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 + 0.2 }}
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                    >
+                      <span className="text-sm font-bold">
+                        {t.name.charAt(0).toUpperCase()}
+                      </span>
+                    </motion.div>
+                    {t.name}
+                  </div>
+                  <div className="text-sm opacity-70 mt-2">
+                    <span className="badge badge-outline badge-sm">
+                      {t.members_count} members
                     </span>
-                  </motion.div>
-                  {t.name}
+                  </div>
+                  <div className="text-xs opacity-70 mt-1">
+                    Captain: {t.members[0] || "No captain"}
+                  </div>
                 </div>
-                <div className="text-sm opacity-70 mt-2">
-                  <span className="badge badge-outline badge-sm">
-                    {t.members_count} members
-                  </span>
-                </div>
-                <div className="text-xs opacity-70 mt-1">
-                  Captain: {t.members[0] || "No captain"}
+                <div className="sm:hidden">
+                  <div className="font-mono text-xs truncate">ID: {t.id}</div>
+                  <div className="text-xs opacity-70 mt-1">
+                    Created: {new Date(t.created_at).toLocaleDateString()}
+                  </div>
                 </div>
               </div>
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-2 max-sm:hidden">
                 <div className="font-mono text-xs truncate">ID: {t.id}</div>
                 <div className="text-xs opacity-70 mt-1">
                   Created: {new Date(t.created_at).toLocaleDateString()}
                 </div>
               </div>
-              <div className="sm:col-span-1 text-right">
+              <div className="max-sm:w-full sm:col-span-1 sm:text-right">
                 <motion.button
-                  className="btn btn-outline btn-sm"
+                  className="max-sm:w-full btn btn-outline btn-sm"
                   onClick={() => setInspectTeam(t)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -352,7 +357,6 @@ export default function TeamsPage() {
         </ul>
       </motion.div>
 
-      {/* Create Team Modal */}
       <AnimatePresence>
         {openCreate && (
           <div className="modal modal-open">
@@ -385,7 +389,7 @@ export default function TeamsPage() {
                 </label>
 
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex sm:items-center sm:justify-between mb-2 max-sm:gap-2 max-sm:flex-col">
                     <div className="label p-0">
                       <span className="label-text">
                         Members (First member is the captain)
@@ -393,7 +397,7 @@ export default function TeamsPage() {
                     </div>
                     <motion.button
                       type="button"
-                      className="btn btn-sm"
+                      className="btn btn-sm max-sm:self-end max-sm:w-fit"
                       onClick={() => append({ name: "" })}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -473,7 +477,6 @@ export default function TeamsPage() {
         )}
       </AnimatePresence>
 
-      {/* View modal */}
       <AnimatePresence>
         {inspectTeam && (
           <div className="modal modal-open">
@@ -575,7 +578,6 @@ export default function TeamsPage() {
   );
 }
 
-// Framer Motion requires AnimatePresence for exit animations
 const AnimatePresence = ({ children }) => {
   return children;
 };
