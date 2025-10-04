@@ -336,7 +336,7 @@ export default function TournamentDetails() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <motion.button
-              className="btn btn-outline"
+              className="btn btn-outline max-sm:hidden"
               onClick={() => navigate(-1)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -365,10 +365,9 @@ export default function TournamentDetails() {
       </div>
 
       <div className="container mx-auto px-4 py-6">
-        {/* Tournament Info */}
         {tournament && (
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 max-sm:hidden"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -536,7 +535,6 @@ export default function TournamentDetails() {
               </motion.div>
             ))}
 
-            {/* Champion card */}
             <motion.div
               className="space-y-3"
               initial={{ opacity: 0, x: 30 }}
